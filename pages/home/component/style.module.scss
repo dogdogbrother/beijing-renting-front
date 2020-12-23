@@ -1,0 +1,65 @@
+.searchBox {
+  display: flex;
+  position: relative;
+  input {
+    flex: 1;
+    background-color: #fff;  
+	  outline:none;  
+    border:none;
+    font-size: 16px;
+    font-weight: 400;
+    padding: 15px;
+    height: 50px;
+    line-height: 20px;
+    color: #555;
+    &:focus {
+      border:none;
+    }
+  }
+}
+.mapIcon {
+  background-color: #fff;
+  line-height: 24px;
+  height: 50px;
+  padding-top: 13px;
+  width: 66px;
+  display: flex;
+  color: #888;
+  font-weight: 500;
+  cursor: pointer;
+  i {
+    display: block;
+    width: 24px;
+    height: 24px;
+    background-image: url("../../../public/icons/map.png");
+    background-size: cover;
+    margin-right: 2px;
+  }
+}
+.searchBtn {
+  background-color: #00ae66;
+  text-align: center;
+  font-size: 18px;
+  line-height: 50px;
+  width: 120px;
+  color: #fff;
+  font-weight: 300;
+  &:hover {
+    background-color: #00b86b;
+  }
+}
+.placeList {
+  position: absolute;
+  left: 0;
+  top: 50px;
+  background-color: #fff;
+  width: 514px;
+  color: #666;
+  li {
+    cursor: pointer;
+    padding: 8px 15px;
+    &:hover {
+      background-color: rgba(238, 238, 238, 0.3);
+    }
+  }
+}
