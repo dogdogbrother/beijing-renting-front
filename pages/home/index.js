@@ -1,3 +1,4 @@
+import Link from 'next/link'
 import styled from './style.module.scss'
 import Search from './component/search'
 
@@ -8,8 +9,8 @@ const Home = () => {
         <header>
           <h3>梅梅公益</h3>
           <ul>
-            <li>租房</li>
-            <li>发布房源</li>
+            <li><Link href="/renting">租房</Link></li>
+            <li><Link href="/publish">发布房源</Link></li>
             <li>登录/注册</li>
           </ul>
         </header>

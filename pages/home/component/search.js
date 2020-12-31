@@ -13,7 +13,8 @@ const Search = () => {
       city: "010",
       citylimit: true
     }}).then(res => {
-      setPlaceList(res.data.tips)
+      console.log(res.data.tips);
+      setPlaceList(res.data.tips || [])
     })
   }
   const debounce = (func, ms = 1000) => {
@@ -29,7 +30,7 @@ const Search = () => {
     searchRef.current.value = item.name
     setPlaceList([])
   }
-  const debounceTask = debounce(onInput, 1000)
+  const debounceTask = debounce(onInput, 500)
   return (
     <div className={styled.searchBox}>
       <input 

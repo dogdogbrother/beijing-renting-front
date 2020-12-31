@@ -1,0 +1,53 @@
+.searchHeadr {
+  background-color: rgba($color: #eee, $alpha: 0.4);
+}
+.searchBox {
+  position: relative;
+  width: 80%;
+  max-width: 1150px;
+  min-width: 700px;
+  margin: 0 auto;
+  padding: 20px 0;
+  height: 40px;
+  box-sizing: content-box;
+  display: flex;
+  input {
+    width: 600px;
+    background-color: #fff;  
+	  outline:none;  
+    border:none;
+    font-size: 16px;
+    font-weight: 400;
+    padding: 15px;
+    height: 40px;
+    line-height: 20px;
+    color: #555;
+    &:focus {
+      border:none;
+    }
+  }
+  div {
+    cursor: pointer;
+    background-color: #fff;
+    height: 100%;
+    padding: 10px 10px 0 10px;
+  }
+}
+.placeList {
+  position: absolute;
+  left: 0;
+  top: 60px;
+  background-color: #fff;
+  width: 640px;
+  color: #666;
+  border: 1px solid rgba($color: #eee, $alpha: 0.8);
+  border-top: none;
+  box-sizing: border-box;
+  li {
+    cursor: pointer;
+    padding: 8px 15px;
+    &:hover {
+      color:#333;
+    }
+  }
+}
