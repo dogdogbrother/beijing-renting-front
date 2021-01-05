@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react'
+import Link from 'next/link'
 import axios from 'axios'
 import Styled from './style.module.scss'
 import { SearchOutlined } from '@ant-design/icons';
@@ -12,6 +13,7 @@ const Renting = ({districts}) => {
   const searchRef = useRef()
   const [community, setCommunity] = useState([])  // 点击地区后，拿到的街道数据
   const [selectCommunity, setSelectCommunity] = useState("")  // 点击街道后，拿到的center数据
+  const [selectTab, setSelectTab] = useState(0)
   const toSearch = (item) => {
     searchRef.current.value = item.name
     setPlaceList([])
@@ -96,11 +98,83 @@ const Renting = ({districts}) => {
           <CheckboxGroup options={checkOptions} />
         </div>
       </nav>
+      <div className={Styled.searchResult}>
+        <p>已为您找到 <span>118</span> 套租房</p>
+        <i>清空条件</i>
+      </div>
+      <ul className={Styled.tabs}>
+        <li className={selectTab === 0 ? Styled.activeTab : ""}>最近上架</li>
+        <li className={selectTab === 1 ? Styled.activeTab : ""}>价格</li>
+        <li className={selectTab === 2 ? Styled.activeTab : ""}>面积</li>
+      </ul>
+      <ul className={Styled.roomBox}>
+        <li>
+          <Link href="/room/1234567890">
+            <img src="http://app-iyoo-test.oss-cn-beijing.aliyuncs.com/app-banner/2020-10-22-18-22-38-5f915d6ecb8d9-banner.jpeg" />
+          </Link>
+          <div className={Styled.roomInfo}>
+            <div className={Styled.roomDes}>     
+              <Link href="/room/1234567890"><h4>整租·红旗小区 2室1厅</h4></Link>
+              <div className={Styled.roomDetail}>
+                <span>通州区-新华街道-红旗小区</span>
+                <span>56㎡</span>
+                <span>南</span>
+              </div>
+              <div className={Styled.roomTagBox}>
+                <span>9号线</span>
+                <span>独卫</span>
+                <span>能做饭</span>
+                <span>朝南</span>
+              </div>
+            </div>
+            <p className={Styled.price}><span>3500</span>元/月</p>
+          </div>
+        </li>
+        <li>
+          <img src="http://app-iyoo-test.oss-cn-beijing.aliyuncs.com/app-banner/2020-10-22-18-22-38-5f915d6ecb8d9-banner.jpeg"/>
+          <div className={Styled.roomInfo}>
+            <div className={Styled.roomDes}>     
+              <h4>整租·红旗小区 2室1厅</h4>
+              <div className={Styled.roomDetail}>
+                <span>通州区-新华街道-红旗小区</span>
+                <span>56㎡</span>
+                <span>南</span>
+              </div>
+              <div className={Styled.roomTagBox}>
+                <span>9号线</span>
+                <span>独卫</span>
+                <span>能做饭</span>
+                <span>朝南</span>
+              </div>
+            </div>
+            <p className={Styled.price}><span>3500</span>元/月</p>
+          </div>
+        </li>
+        <li>
+          <img src="http://app-iyoo-test.oss-cn-beijing.aliyuncs.com/app-banner/2020-10-22-18-22-38-5f915d6ecb8d9-banner.jpeg"/>
+          <div className={Styled.roomInfo}>
+            <div className={Styled.roomDes}>     
+              <h4>整租·红旗小区 2室1厅</h4>
+              <div className={Styled.roomDetail}>
+                <span>通州区-新华街道-红旗小区</span>
+                <span>56㎡</span>
+                <span>南</span>
+              </div>
+              <div className={Styled.roomTagBox}>
+                <span>9号线</span>
+                <span>独卫</span>
+                <span>能做饭</span>
+                <span>朝南</span>
+              </div>
+            </div>
+            <p className={Styled.price}><span>3500</span>元/月</p>
+          </div>
+        </li>
+      </ul>
     </>
   )
 }
 export async function getStaticProps() {
-  console.log("test");
   const { data } = await axios.get(`http://restapi.amap.com/v3/config/district`, {params: {
     key: "4fb4ccdb42fc6d32764e91a17b805776",
     keywords: "010",

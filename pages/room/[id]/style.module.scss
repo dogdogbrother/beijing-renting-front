@@ -1,0 +1,30 @@
+.roomWrap {
+  width: 80%;
+  max-width: 1150px;
+  min-width: 700px;
+  margin: 0 auto;
+  padding: 20px 0;
+  h2 {
+    font-weight: 500;
+    font-size: 24px;
+    line-height: 38px;
+    margin-bottom: 5px;
+  }
+  small {
+    display: block;
+    color: #aaa;
+    font-size: 14px;
+    line-height: 22px;
+    margin-bottom: 10px;
+  }
+}
+.roomView {
+  
+}
+.Carousel {
+  width: 320px;
+  img {
+    width: 320px;
+    height: 244px;
+  }
+}
