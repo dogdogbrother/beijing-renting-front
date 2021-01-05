@@ -2,6 +2,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import styled from './style.module.scss'
 import Search from './component/search'
+import LoginForm from './component/loginForm'
 import Modal from '../../components/modal'
 
 const Home = () => {
@@ -25,8 +26,8 @@ const Home = () => {
           <Search />
         </section>
       </div>
-      <Modal show={show}>
-        
+      <Modal show={show} close={()=> setShow(false)}>
+        <LoginForm />
       </Modal>
     </div>
   )

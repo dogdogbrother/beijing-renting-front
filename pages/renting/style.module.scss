@@ -25,6 +25,9 @@
     &:focus {
       border:none;
     }
+    &::placeholder {
+      color: #aaa;
+    }
   }
   div {
     cursor: pointer;
@@ -50,4 +53,33 @@
       color:#333;
     }
   }
+}
+.nav {
+  width: 80%;
+  max-width: 1150px;
+  min-width: 700px;
+  margin: 0 auto;
+  padding: 20px 0;
+}
+.navItem {
+  line-height: 26px;
+  font-size: 16px;
+  display: flex;
+  margin-bottom: 10px;
+}
+.label {
+  width: 50px;
+  font-weight: 500;
+  margin-right: 20px;
+}
+.choice {
+  flex: 1;
+  span {
+    cursor: pointer;
+    margin-right: 15px;
+    white-space: nowrap;
+  }
+}
+.activeTag {
+  color: #00ae66;
 }

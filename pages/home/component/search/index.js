@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react'
+import Link from 'next/link'
 import axios from 'axios'
 import styled from './style.module.scss'
 
@@ -38,10 +39,12 @@ const Search = () => {
         onInput={debounceTask}
         ref={searchRef}
         ></input>
-      <div className={styled.mapIcon}>
-        <i></i>
-        <span>地图</span>
-      </div>
+        <Link href="/map">
+          <div className={styled.mapIcon}>
+            <i></i>
+            <span>地图</span>
+          </div>
+        </Link>
       <div className={styled.searchBtn}>开始找房</div>
       <ul className={styled.placeList}>
         {placeList.map(place => {

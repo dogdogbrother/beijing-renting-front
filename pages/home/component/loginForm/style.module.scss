@@ -1,0 +1,28 @@
+.formWrap {
+  width: 450px;
+  padding: 20px 0 5px 0;
+  input {
+    width: 100%;
+    display: block;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 15px;
+    &:focus {
+      outline: none;
+    }
+    &::placeholder {
+      color: #bbb;
+    }
+  }
+  div {
+    width: 160px;
+    line-height: 48px;
+    color: #fff;
+    background-color: #00ae66;
+    font-size: 20px;
+    text-align: center;
+    margin: 0 auto;
+    font-weight: 400;
+    cursor: pointer;
+  }
+}
