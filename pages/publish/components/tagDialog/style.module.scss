@@ -1,0 +1,30 @@
+.wrap {
+  width: 640px;
+  padding: 34px 0 10px 0;
+  section {
+    padding: 5px 0;
+    display: flex;
+    align-items: center;
+    label {
+      width: 100px;
+      font-size: 16px;
+    }
+  }
+}
+.tagBox {
+  flex: 1;
+}
+.btn {
+  p {
+    width: 80px;
+    line-height: 32px;
+    font-size: 18px;
+    border-radius: 2px;
+    text-align: center;
+    margin-bottom: 0;
+    margin-left: calc(100% - 80px);
+    background-color: #00ac65;
+    color: #fff;
+    cursor: pointer;
+  }
+}

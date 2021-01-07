@@ -2,7 +2,7 @@ import Createportal from '../createPortal'
 import Styled from './style.module.scss'
 import { CloseOutlined } from '@ant-design/icons';
 const Modal = (props) => {
-  const { show, children, close } = props
+  const { show, children, close, title } = props
   const onClose = ()=> {
     close()
   }
@@ -12,7 +12,7 @@ const Modal = (props) => {
         <div className={Styled.modal}>
           <div className={Styled.wrap}>
             <header>
-              <span>登录</span>
+              <span>{title}</span>
               <CloseOutlined className={Styled.closeIcon} onClick={onClose}/>
             </header>
             {children}

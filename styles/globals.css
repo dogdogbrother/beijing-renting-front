@@ -13,3 +13,21 @@ a {
   text-decoration: none;
   color: #333;
 }
+
+.hand {
+  cursor: pointer;
+}
+.m-y-5 {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+.m-b-5 {
+  margin-bottom: 5px;
+}
+.m-b-10 {
+  margin-bottom: 10px;
+}
+.m-b-15 {
+  margin-bottom: 15px;
+}
+

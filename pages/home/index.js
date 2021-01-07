@@ -1,15 +1,12 @@
-import { useState } from 'react'
 import Link from 'next/link'
+import { useState } from 'react'
 import styled from './style.module.scss'
 import Search from './component/search'
 import LoginForm from './component/loginForm'
 import Modal from '../../components/modal'
 
 const Home = () => {
-  const [show, setShow] = useState(false)
-  const onOpenLogin = () => {
-    setShow(true)
-  }
+  const [showLogin, setShowLogin] = useState(false)
   return (
     <div className={styled.wrapper}>
       <div className={styled.view}>
@@ -18,7 +15,7 @@ const Home = () => {
           <ul>
             <li><Link href="/renting">租房</Link></li>
             <li><Link href="/publish">发布房源</Link></li>
-            <li onClick={onOpenLogin}>登录/注册</li>
+            <li onClick={() => setShowLogin(true)}>登录/注册</li>
           </ul>
         </header>
         <section className={styled.main}>
@@ -26,11 +23,10 @@ const Home = () => {
           <Search />
         </section>
       </div>
-      <Modal show={show} close={()=> setShow(false)}>
-        <LoginForm />
+      <Modal show={showLogin} close={() => setShowLogin(false)} title="登录/注册">
+        <LoginForm close={() => setShowLogin(false)}/>
       </Modal>
     </div>
   )
 }
-
 export default Home

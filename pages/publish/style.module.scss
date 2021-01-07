@@ -26,7 +26,8 @@
       border: none;
       outline:none;  
       color: #555;
-      font-size: 16px;
+      flex: 1;
+      font-size: 15px;
       &:focus {
         border:none;
       }
@@ -34,20 +35,28 @@
         color: #bbb;
       }
     }
-    span {
-      font-size: 16px;
+    input[type=number] {
+      -moz-appearance:textfield;
+    }
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    & > span {
+      font-size: 15px;
       font-weight: 500;
       width: 80px;
     }
   }
 }
-.tagBox {
+.inputBox {
   flex: 1;
   display: flex;
   flex-wrap: wrap;
   input {
     background-color: #eee;
-    width: 120px;
+    width: 120px !important;
     padding: 10px;
     margin-right: 10px;
   }
@@ -61,4 +70,29 @@
   text-align: center;
   background-color: #00ac65;
   margin: 0 auto;
+}
+.tagLabel {
+  display: flex;
+  align-items: center;
+}
+.tagBox {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.placeholder {
+  color: #bbb;
+  font-size: 15px;
+  margin-bottom: 0;  
+}
+.tagButton {
+  font-size: 14px;
+  width: 80px;
+  line-height: 30px;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  text-align: center;
+  background-color: #00ac65;
 }
