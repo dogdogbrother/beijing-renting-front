@@ -1,6 +1,6 @@
 import styled from './style.module.scss'
 import { useState, useEffect } from 'react'
-import { Divider, Tag } from 'antd';
+import { Divider, Tag, message } from 'antd';
 
 const TagDialog = (props) => {
   const { onChoice, onClose, tags } = props
@@ -59,6 +59,9 @@ const TagDialog = (props) => {
     },
   ])
   function addTag(tag) {
+    if (myTag.length > 7) {
+      return message.warning('标签最多只能有8个');
+    }
     setMyTag([...myTag, tag])
   }
   function removeTag(id) {
@@ -69,6 +72,7 @@ const TagDialog = (props) => {
     onChoice(myTag)
   }
   return <div className={styled.wrap}>
+    <p className={styled.description}>最多能选择8个标签,前三个标签会作为房屋展示</p>
     <section>
       <label>拥有的标签</label>
       <div className={styled.tagBox}>

@@ -4,6 +4,7 @@ import axios from 'axios'
 import Styled from './style.module.scss'
 import { SearchOutlined } from '@ant-design/icons';
 import { Checkbox } from 'antd';
+import { getGaodeSite } from '../../http/api'
 const CheckboxGroup = Checkbox.Group;
 /**
  * @param {array} districts  是从高德API申请过来的地区列表
@@ -19,16 +20,8 @@ const Renting = ({districts}) => {
     setPlaceList([])
   }
   const checkOptions = ["0-1500","1500-2500","2500-3500","3500-4500","4500+"]
-  const onInput = (e) => {
-    const keywords = e.target.value
-    axios.get("https://restapi.amap.com/v3/assistant/inputtips", {params: {
-      key: "4fb4ccdb42fc6d32764e91a17b805776",
-      keywords,
-      city: "010",
-      citylimit: true
-    }}).then(res => {
-      setPlaceList(res.data.tips)
-    })
+  const onInput = async (e) => {
+    setPlaceList(await getGaodeSite(e.target.value))
   }
   const debounce = (func, ms = 1000) => {
     let timer;

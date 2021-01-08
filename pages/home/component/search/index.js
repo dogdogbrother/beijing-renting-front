@@ -1,22 +1,12 @@
 import { useState, useRef } from 'react'
 import Link from 'next/link'
-import axios from 'axios'
 import styled from './style.module.scss'
-
+import { getGaodeSite } from '../../../../http/api'
 const Search = () => {
   const [placeList, setPlaceList] = useState([])
   const searchRef = useRef()
-  const onInput = (e) => {
-    const keywords = e.target.value
-    axios.get("https://restapi.amap.com/v3/assistant/inputtips", {params: {
-      key: "4fb4ccdb42fc6d32764e91a17b805776",
-      keywords,
-      city: "010",
-      citylimit: true
-    }}).then(res => {
-      console.log(res.data.tips);
-      setPlaceList(res.data.tips || [])
-    })
+  const onInput = async (e) => {
+    setPlaceList(await getGaodeSite(e.target.value))
   }
   const debounce = (func, ms = 1000) => {
     let timer;

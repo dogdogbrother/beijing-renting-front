@@ -1,0 +1,24 @@
+.wrap {
+  width: 740px;
+}
+.description {
+  color: #999;
+  margin: 10px 0;
+}
+.radioStyle {
+  display: block;
+  margin: 10px 0;
+}
+.btn {
+  width: 80px;
+  line-height: 32px;
+  font-size: 18px;
+  border-radius: 2px;
+  text-align: center;
+  margin-top: 5px;
+  margin-bottom: 0;
+  margin-left: calc(100% - 80px);
+  background-color: #00ac65;
+  color: #fff;
+  cursor: pointer;
+}

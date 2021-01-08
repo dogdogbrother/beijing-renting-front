@@ -1,18 +1,12 @@
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 import styled from './style.module.scss'
+import { getGaodeSite } from '../../http/api'
+
 const SiteHint = (props) => {
   const { value, top } = props
   const [site, setSite] = useState([])
-  useEffect(() => {
-    value && axios.get("https://restapi.amap.com/v3/assistant/inputtips", {params: {
-      key: "4fb4ccdb42fc6d32764e91a17b805776",
-      keywords: value,
-      city: "010",
-      citylimit: true
-    }}).then(res => {
-      setSite(res.data.tips)
-    })
+  useEffect(async () => {
+    value && setSite(await getGaodeSite(value))
   }, [value])
   
   return (

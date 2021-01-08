@@ -12,7 +12,7 @@
   }
 }
 .formBox {
-  padding: 40px 0;
+  padding: 40px 0 10px;
   width: 600px;
   margin: 0 auto;
 }
@@ -61,6 +61,13 @@
     margin-right: 10px;
   }
 }
+.verify {
+  font-size: 14px;
+  color: red;
+  margin: 0;
+  line-height: 24px;
+  height: 24px;
+}
 .submitButton {
   font-size: 18px;
   line-height: 30px;
@@ -70,6 +77,7 @@
   text-align: center;
   background-color: #00ac65;
   margin: 0 auto;
+  cursor: pointer;
 }
 .tagLabel {
   display: flex;
