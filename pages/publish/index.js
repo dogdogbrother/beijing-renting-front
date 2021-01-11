@@ -3,13 +3,16 @@ import styled from './style.module.scss'
 import Modal from '../../components/modal'
 import TagDialog from './components/tagDialog'
 import AccurateDialog from './components/accurateDialog'
-import { Tag } from 'antd';
+import { PlusOutlined, CloseCircleOutlined, LoadingOutlined } from '@ant-design/icons';
+import { Tag, message } from 'antd';
 const Publish = () => {
   const [tagDialog, setTagDialog] = useState(false)
   const [accurateDialog, setAccurateDialog] = useState(false)  // accurate 精准
   const [accurateValue, setAccurateValue] = useState("")
+  const [roomImgs, setRoomImgs] = useState([])
   const [verify, setVerify] = useState("")
   const inputRef = useRef()
+  const fileRef = useRef()
   const [form, setForm] = useState({
     region: new Object(),  // 小区信息,input输入后,弹出对话框,选择高德地图提供的结果,放到这里面.
     buildNumber: "",
@@ -53,6 +56,27 @@ const Publish = () => {
       ...form,
       [e.target.name]: e.target.value
     })
+  }
+  function selectImage(e) {
+    if (roomImgs.length + e.target.files > 6) {
+      return message.warning('最多只能上传6张照片');
+    }
+    const imgTmp = [...roomImgs]
+    for (let i = 0; i < e.target.files.length; i++) {
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        imgTmp.push(ev.target.result)
+        if (i === (e.target.files.length - 1)) {
+          setRoomImgs(imgTmp)
+        }
+      }
+      reader.readAsDataURL(e.target.files[i]);
+    }
+  }
+  function removeImg(index) {
+    const arr = [...roomImgs]
+    arr.splice(index, 1)
+    setRoomImgs(arr)
   }
   function onSubmit() {
     setVerify("")
@@ -119,7 +143,7 @@ const Publish = () => {
             <input placeholder="李先/生张女士/奥特曼 之类的随意" name="nickname" onInput={onInput}/>
           </li>
           <li>
-            <span className={styled.tagLabel}>房屋标签</span>
+            <span className={styled.heightLabel}>房屋标签</span>
             <div className={styled.tagBox}>
               {
                 tags.length
@@ -133,10 +157,35 @@ const Publish = () => {
               <div className={styled.tagButton} onClick={() => setTagDialog(true)}>添加标签</div>
             </div>
           </li>
+          <li>
+            <span className={styled.heightLabel}>房屋图片</span>
+            <div className={styled.imgBox}>
+              {
+                roomImgs.map((img, index) => (
+                  <div key={index} className={styled.img} style={{backgroundImage: `url(${img})`}}>
+                    {/* 遮罩层里面放删除icon */}
+                    <CloseCircleOutlined onClick={() => removeImg(index)}/>
+                  </div>
+                ))
+              }
+              {
+                roomImgs.length >= 6 ? null : (
+                  <div className={styled.imgBtn}>
+                    <div>
+                      <PlusOutlined />
+                    </div>
+                    <input type="file" ref={fileRef} onChange={selectImage} accept="image/*" multiple />
+                  </div>
+                )
+              }
+            </div>
+          </li>
         </ul>
         <p className={styled.verify}>{verify}</p>
       </section>
-      <div className={styled.submitButton} onClick={onSubmit}>发布出租委托</div>
+      
+      {/* <div className={styled.submitButton} onClick={onSubmit}>发布出租委托</div> */}
+      <div className={styled.submitButton} onClick={onSubmit}><LoadingOutlined /></div>
       <div style={{height: "20px"}}></div>
       <Modal show={tagDialog} title="选择房屋标签" close={()=>setTagDialog(false)}>
         <TagDialog onChoice={onChoiceTag} onClose={onCloseTagDialog} tags={tags}/>

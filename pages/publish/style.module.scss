@@ -79,7 +79,7 @@
   margin: 0 auto;
   cursor: pointer;
 }
-.tagLabel {
+.heightLabel {
   display: flex;
   align-items: center;
 }
@@ -103,4 +103,53 @@
   cursor: pointer;
   text-align: center;
   background-color: #00ac65;
+}
+.imgBox {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+}
+.img {
+  width: 100px;
+  height: 100px;
+  margin-right: 5px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+  position: relative;
+  span {
+    margin: 35px auto 0;
+    display: none;
+    width: 38px;
+    cursor: pointer;
+    color: #eee;
+    font-size: 30px;
+  }
+  &:hover span{
+    display: block;
+  } 
+}
+.imgBtn {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  input {
+    opacity: 0;
+    font-size: 0 !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+  div {
+    border: 2px solid #eee;
+    color: #ddd;
+    text-align: center;
+    line-height: 98px;
+    font-size: 34px;
+    width: 100%;
+    height: 100%;
+  }
 }
