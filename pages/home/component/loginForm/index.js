@@ -47,7 +47,7 @@ const LoginForm = (props) => {
     if (pass) return 
     const URL_API = isLogin ? "/user/login" : "user/register"
     const postData = isLogin ? {...loginForm} : {...registerForm}
-    http.post(URL_API, {data: postData}).then(res => {
+    http.post(URL_API, {...postData}).then(res => {
       console.log(res);
       close()
     })
