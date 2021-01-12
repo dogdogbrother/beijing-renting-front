@@ -18,6 +18,8 @@ axios.post("user/register", {data: {
 ### 2.登录
 API为 `user/login`,其余和注册一致.
 
+> 注册和登录都会返回 `token` 字段,把此字段放在请求头 token 中,作为登录校验.
+
 ## 租房模块
 
 

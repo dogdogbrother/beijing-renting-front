@@ -1,9 +1,9 @@
 import styled from './style.module.scss'
 import { useState } from 'react'
-
+import http from '../../../../http/http'
 const LoginForm = (props) => {
   const { close } = props
-  const [isLogin, setIsLogin] = useState(true)
+  const [isLogin, setIsLogin] = useState(true) // true是登录,false是注册
   const [loginForm, setLoginForm] = useState({
     username: "",
     password: ""
@@ -45,7 +45,13 @@ const LoginForm = (props) => {
     const pass = formVerify(isLogin)
     setVerify(pass)
     if (pass) return 
-    close()
+    const URL_API = isLogin ? "/user/login" : "user/register"
+    const postData = isLogin ? {...loginForm} : {...registerForm}
+    http.post(URL_API, {data: postData}).then(res => {
+      console.log(res);
+      close()
+    })
+    
   }
   function onSwitch() {
     setVerify("")
