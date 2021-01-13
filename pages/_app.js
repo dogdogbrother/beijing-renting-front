@@ -1,10 +1,27 @@
 import 'antd/dist/antd.css';
+import { useEffect } from 'react'
 import Head from 'next/head'
 import { Provider } from 'react-redux';
 import store from '../config/dva';
 import '../styles/globals.css'
-
+import http from '../http/http'
 function MyApp({ Component, pageProps }) {
+  useEffect(() => {
+    http.get("/user/info").then(({username, id}) => {
+      // 已登录
+      console.log("正在登录");
+      if (username) {
+        store.dispatch({
+          type: "user/setStatus",
+          payload: {
+            loginStatus: true,
+            username,
+            id
+          }
+        })
+      }
+    })
+  }, [])
   return <>
     <Head>
       <title>公益租房群</title>

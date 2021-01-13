@@ -1,8 +1,10 @@
 import styled from './style.module.scss'
 import { useState } from 'react'
+import { useDispatch } from 'react-redux'
 import http from '../../../../http/http'
 const LoginForm = (props) => {
   const { close } = props
+  const dispatch = useDispatch()
   const [isLogin, setIsLogin] = useState(true) // true是登录,false是注册
   const [loginForm, setLoginForm] = useState({
     username: "",
@@ -47,11 +49,18 @@ const LoginForm = (props) => {
     if (pass) return 
     const URL_API = isLogin ? "/user/login" : "user/register"
     const postData = isLogin ? {...loginForm} : {...registerForm}
-    http.post(URL_API, {...postData}).then(res => {
-      console.log(res);
+    http.post(URL_API, {...postData}).then(({username, token, id}) => {
+      localStorage.setItem("token", token)
+      dispatch({
+        type: "user/setStatus",
+        payload: {
+          loginStatus: true,
+          username,
+          id
+        }
+      })
       close()
     })
-    
   }
   function onSwitch() {
     setVerify("")

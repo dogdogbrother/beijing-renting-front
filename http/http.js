@@ -15,4 +15,18 @@ http.interceptors.request.use(
   }
 )
 
+http.interceptors.response.use(
+  response => {
+    if (response.data.status === 200) {
+      return response.data.data || new Object()
+    } else {
+      alert(response.data.msg)
+      return Promise.reject(response.data || {status: 400, msg: "网络错误"})
+    }
+  },
+  error => {
+    return Promise.reject(error)
+  }
+)
+
 export default http

@@ -1,6 +1,6 @@
 
-import login from './login'
+import user from './user'
 
-const models = [ login ]
+const models = [ user ]
 
 export default models;
