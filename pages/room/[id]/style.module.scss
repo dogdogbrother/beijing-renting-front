@@ -18,13 +18,13 @@
     margin-bottom: 10px;
   }
 }
-.roomView {
-  
-}
-.Carousel {
-  width: 320px;
-  img {
-    width: 320px;
-    height: 244px;
+.item {
+  background-color: #000;
+  div {
+    width: 100%;
+    height: 200px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position: center center;
   }
 }

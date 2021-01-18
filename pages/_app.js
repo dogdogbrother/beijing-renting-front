@@ -8,8 +8,7 @@ import http from '../http/http'
 function MyApp({ Component, pageProps }) {
   useEffect(() => {
     http.get("/user/info").then(({username, id}) => {
-      // 已登录
-      console.log("正在登录");
+      // 已登录处理, 未登录不处理
       if (username) {
         store.dispatch({
           type: "user/setStatus",

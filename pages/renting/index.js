@@ -1,10 +1,11 @@
-import { useState, useRef } from 'react'
-import Link from 'next/link'
+import { useState, useRef, useEffect } from 'react'
 import axios from 'axios'
+import http from '../../http/http'
 import Styled from './style.module.scss'
 import { SearchOutlined } from '@ant-design/icons';
 import { Checkbox } from 'antd';
 import { getGaodeSite } from '../../http/api'
+import HousList from './components/houseList'
 const CheckboxGroup = Checkbox.Group;
 /**
  * @param {array} districts  是从高德API申请过来的地区列表
@@ -12,14 +13,26 @@ const CheckboxGroup = Checkbox.Group;
 const Renting = ({districts}) => {
   const [placeList, setPlaceList] = useState([])  // 输入提醒的列表数据
   const searchRef = useRef()
+  const [loading, setLoading] = useState(false) 
+  // districts 和 community 负责渲染的城区和街道列表,他们都有一个唯一值 adcode .
+  // 我们就拿 adcode 作为搜索条件精准查找,mysql字段也有 adcode 的
   const [community, setCommunity] = useState([])  // 点击地区后，拿到的街道数据
+  const [searchData, setSearchData] = useState({
+    adcode: undefined, // 城区参数
+    community: undefined, // 街道参数
+  })
   const [selectCommunity, setSelectCommunity] = useState("")  // 点击街道后，拿到的center数据
+  // const
   const [selectTab, setSelectTab] = useState(0)
+  const [houseList, setHouseList] = useState({count: 0, list: []})
   const toSearch = (item) => {
     searchRef.current.value = item.name
     setPlaceList([])
   }
   const checkOptions = ["0-1500","1500-2500","2500-3500","3500-4500","4500+"]
+  useEffect(() => {
+    onSearch()
+  }, [searchData])
   const onInput = async (e) => {
     setPlaceList(await getGaodeSite(e.target.value))
   }
@@ -33,9 +46,27 @@ const Renting = ({districts}) => {
     }
   }
   const debounceTask = debounce(onInput, 1000)
+  function onSearch(){
+    setLoading(true)
+    http.get("/house/list", {params: {
+      pageSize: 10,
+      pageNum: 1,
+      ...searchData
+    }}).then(data => {
+      setHouseList({
+        count: data.count || 0,
+        list: data.list || []
+      })
+      setLoading(false)
+    }).catch(() => setLoading(false))
+  }
   function getDistrictTag(district) {
     return <span 
-             onClick={() => setCommunity(district.districts) } 
+             onClick={() => {
+                if (loading) return
+                setCommunity(district.districts)
+                setSearchData({...searchData, adcode: district.adcode, community: undefined})
+             }} 
              key={district.adcode}
              className={community[0]?.adcode === district.adcode ? Styled.activeTag : ""}>
              {district.name}
@@ -71,7 +102,11 @@ const Renting = ({districts}) => {
               {community.map(district => (
                 <span 
                   key={district.center} 
-                  onClick={() => setSelectCommunity(district.center)}
+                  onClick={() => {
+                    if (loading) return
+                    setSelectCommunity(district.center)
+                    setSearchData({...searchData, community: district.name})
+                  }}
                   className={selectCommunity === district.center ? Styled.activeTag : ""}
                 >{district.name}</span>
               ))}
@@ -92,78 +127,15 @@ const Renting = ({districts}) => {
         </div>
       </nav>
       <div className={Styled.searchResult}>
-        <p>已为您找到 <span>118</span> 套租房</p>
+        <p>已为您找到 <span>{houseList.count}</span> 套租房</p>
         <i>清空条件</i>
       </div>
       <ul className={Styled.tabs}>
-        <li className={selectTab === 0 ? Styled.activeTab : ""}>最近上架</li>
+        <li className={selectTab === 0 ? Styled.activeTab : ""}>最近上发布</li>
         <li className={selectTab === 1 ? Styled.activeTab : ""}>价格</li>
         <li className={selectTab === 2 ? Styled.activeTab : ""}>面积</li>
       </ul>
-      <ul className={Styled.roomBox}>
-        <li>
-          <Link href="/room/1234567890">
-            <img src="http://app-iyoo-test.oss-cn-beijing.aliyuncs.com/app-banner/2020-10-22-18-22-38-5f915d6ecb8d9-banner.jpeg" />
-          </Link>
-          <div className={Styled.roomInfo}>
-            <div className={Styled.roomDes}>     
-              <Link href="/room/1234567890"><h4>整租·红旗小区 2室1厅</h4></Link>
-              <div className={Styled.roomDetail}>
-                <span>通州区-新华街道-红旗小区</span>
-                <span>56㎡</span>
-                <span>南</span>
-              </div>
-              <div className={Styled.roomTagBox}>
-                <span>9号线</span>
-                <span>独卫</span>
-                <span>能做饭</span>
-                <span>朝南</span>
-              </div>
-            </div>
-            <p className={Styled.price}><span>3500</span>元/月</p>
-          </div>
-        </li>
-        <li>
-          <img src="http://app-iyoo-test.oss-cn-beijing.aliyuncs.com/app-banner/2020-10-22-18-22-38-5f915d6ecb8d9-banner.jpeg"/>
-          <div className={Styled.roomInfo}>
-            <div className={Styled.roomDes}>     
-              <h4>整租·红旗小区 2室1厅</h4>
-              <div className={Styled.roomDetail}>
-                <span>通州区-新华街道-红旗小区</span>
-                <span>56㎡</span>
-                <span>南</span>
-              </div>
-              <div className={Styled.roomTagBox}>
-                <span>9号线</span>
-                <span>独卫</span>
-                <span>能做饭</span>
-                <span>朝南</span>
-              </div>
-            </div>
-            <p className={Styled.price}><span>3500</span>元/月</p>
-          </div>
-        </li>
-        <li>
-          <img src="http://app-iyoo-test.oss-cn-beijing.aliyuncs.com/app-banner/2020-10-22-18-22-38-5f915d6ecb8d9-banner.jpeg"/>
-          <div className={Styled.roomInfo}>
-            <div className={Styled.roomDes}>     
-              <h4>整租·红旗小区 2室1厅</h4>
-              <div className={Styled.roomDetail}>
-                <span>通州区-新华街道-红旗小区</span>
-                <span>56㎡</span>
-                <span>南</span>
-              </div>
-              <div className={Styled.roomTagBox}>
-                <span>9号线</span>
-                <span>独卫</span>
-                <span>能做饭</span>
-                <span>朝南</span>
-              </div>
-            </div>
-            <p className={Styled.price}><span>3500</span>元/月</p>
-          </div>
-        </li>
-      </ul>
+      <HousList houseList={houseList.list} />
     </>
   )
 }

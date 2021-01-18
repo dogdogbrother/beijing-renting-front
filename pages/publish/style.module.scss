@@ -27,12 +27,14 @@
       outline:none;  
       color: #555;
       flex: 1;
-      font-size: 15px;
+      font-size: 14px;
       &:focus {
         border:none;
       }
       &::placeholder {
-        color: #bbb;
+        font-size: 14px;
+        color: #bfbfbf;
+        font-weight: normal;
       }
     }
     input[type=number] {
@@ -44,6 +46,8 @@
       margin: 0;
     }
     & > span {
+      display: flex;
+      align-items: center;
       font-size: 15px;
       font-weight: 500;
       width: 80px;
@@ -120,7 +124,7 @@
   span {
     margin: 35px auto 0;
     display: none;
-    width: 38px;
+    width: 30px;
     cursor: pointer;
     color: #eee;
     font-size: 30px;

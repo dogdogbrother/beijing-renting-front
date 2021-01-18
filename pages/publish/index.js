@@ -1,27 +1,39 @@
 import { useState, useRef } from 'react'
+import http from '../../http/http'
 import styled from './style.module.scss'
 import Modal from '../../components/modal'
 import TagDialog from './components/tagDialog'
 import AccurateDialog from './components/accurateDialog'
 import { PlusOutlined, CloseCircleOutlined, LoadingOutlined } from '@ant-design/icons';
-import { Tag, message } from 'antd';
+import { Tag, message, Select } from 'antd';
+import { dealImage } from '../../help/help'
+import Router from 'next/router'
+import { formVerify } from'./verify'
+
 const Publish = () => {
+  const [loading, setLoading] = useState(false)
   const [tagDialog, setTagDialog] = useState(false)
   const [accurateDialog, setAccurateDialog] = useState(false)  // accurate 精准
+  const [communityOptions, setCommunityOptions] = useState([])  // 街道的下拉选项
   const [accurateValue, setAccurateValue] = useState("")
   const [roomImgs, setRoomImgs] = useState([])
-  const [verify, setVerify] = useState("")
+  const [verify, setVerify] = useState("")  // 校验失败显示的内容
   const inputRef = useRef()
   const fileRef = useRef()
   const [form, setForm] = useState({
-    region: new Object(),  // 小区信息,input输入后,弹出对话框,选择高德地图提供的结果,放到这里面.
-    buildNumber: "",
-    cellNumber: "",
-    houseNumber: "",
-    rental: "",
-    describe: "",
+    /**
+     *  @description 小区信息,input输入后,弹出对话框,选择高德地图提供的结果,放到这里面.
+     *               对象里面的几个参数都有用,例如名字,所在的区,id,坐标等等,解构后给后端
+     */
+    region: new Object(), 
+    community: "", // 街道,通过 region.adcode 向高德申请而来
+    buildNumber: "",  // 楼栋号
+    cellNumber: "",  // 单元号
+    houseNumber: "",  // 门牌号
+    rental: "",  // 出租价格
+    describe: "",  // 描述
     _phone: "",  // 因为直接 name=phone 的话 样式会有问题,提交的时候还要变成phone
-    nickname: "",
+    nickname: "", // 称呼方式
   })
   const [tags, setTags] = useState([])
   function onChoiceTag(tags) {
@@ -43,6 +55,7 @@ const Publish = () => {
     setAccurateValue(e.target.value)
     setAccurateDialog(true)
   }
+  // 精准定位的dialog成功回调,除了要赋值给input,还要请求街道信息
   function onAccurate(region) {
     setAccurateDialog(false)
     setForm({
@@ -50,6 +63,16 @@ const Publish = () => {
       region
     })
     inputRef.current.value = region.name
+    setCommunityOptions([])
+    http.get("http://restapi.amap.com/v3/config/district", {
+      params: {
+        key: "4fb4ccdb42fc6d32764e91a17b805776",
+        keywords: region.adcode,
+      },
+      noToken: true
+    }).then(res => {
+      setCommunityOptions(res.districts[0].districts.map(district => district.name))
+    })
   }
   function onInput(e) {
     setForm({
@@ -79,32 +102,37 @@ const Publish = () => {
     setRoomImgs(arr)
   }
   function onSubmit() {
-    setVerify("")
-    if (!form.region.id) {
-      return setVerify("无效的小区名,必须从对话框中选择小区哦")
+    if (formVerify(form, roomImgs, setVerify)) return
+    const { _phone, region, ...surplus } = form
+    const postData = {
+      phone: _phone,
+      ...surplus,
+      adcode: region.adcode,
+      address: region.address,
+      district: region.district,
+      locationId: region.id,
+      location: region.location,
+      locationName: region.name,
+      tags: tags.map(tag => tag.id)  //  
     }
-    if (!form.buildNumber) {
-      return setVerify("必须输入楼栋号")
-    }
-    if (!form.cellNumber) {
-      return setVerify("必须输入单元号")
-    }
-    if (!form.houseNumber) {
-      return setVerify("必须输入门牌号")
-    }
-    if (!form.rental) {
-      return setVerify("必须有出租价格")
-    }
-    if (!form.describe) {
-      return setVerify("必须房屋描述")
-    }
-    if (!form._phone) {
-      return setVerify("请输入联系方式")
-    }
-    if (!form.nickname) {
-      return setVerify("如何称呼您")
-    }
-    alert("提交代码")
+    setLoading(true)
+    // 利用 Promise 把所有的图片进行压缩,压缩成功后再发送请求
+    Promise.all(roomImgs.map(img => {
+      return dealImage(img)
+    })).then(picture => {
+      http.post("/house/add", {...postData, picture}).then(res => {
+        setLoading(false)
+        Router.push(`/room/${res.houseId}`)
+      }).catch(() => {
+        setLoading(false)
+      })
+    })
+  }
+  function changeCommunity(value) {
+    setForm({
+      ...form,
+      community: value
+    })
   }
   return (
     <>
@@ -116,31 +144,46 @@ const Publish = () => {
         <ul className={styled.form}>
           <li>
             <span>小区</span>
-            <input ref={inputRef} placeholder="请输入小区名" onBlur={openGaode} onKeyUp={onEnter}/>
+            <input ref={inputRef} placeholder="请输入小区名" onBlur={openGaode} onKeyUp={onEnter} autoComplete="off"/>
           </li>
+          {
+            communityOptions.length ? <li>
+              <span>街道</span>
+              <Select 
+                style={{width: "100%"}} 
+                bordered={false} 
+                placeholder="点击选择对应的街道" 
+                onChange={changeCommunity}>
+                {
+                  communityOptions.map(item => <Select.Option value={item} key={item}>{item}</Select.Option>)
+                }
+                
+              </Select>
+            </li> : null
+          }
           <li>
-            <span style={{lineHeight: "45px"}}>详细地址</span>
+            <span>详细地址</span>
             <div className={styled.inputBox}>
-              <input placeholder="请输入楼栋号" type="number" name="buildNumber" onInput={onInput}/>
-              <input placeholder="请输入单元号" type="number" name="cellNumber" onInput={onInput}/>
-              <input placeholder="请输入门牌号" type="number" name="houseNumber" onInput={onInput}/>
+              <input placeholder="请输入楼栋号" type="number" name="buildNumber" onInput={onInput} autoComplete="off"/>
+              <input placeholder="请输入单元号" type="number" name="cellNumber" onInput={onInput} autoComplete="off"/>
+              <input placeholder="请输入门牌号" type="number" name="houseNumber" onInput={onInput} autoComplete="off"/>
             </div>
           </li>
           <li>
             <span>出租价格</span>
-            <input placeholder="单位/元,不能输入区间" type="number" name="rental" onInput={onInput}/>
+            <input placeholder="单位/元,不能输入区间" type="number" name="rental" onInput={onInput} autoComplete="off"/>
           </li>
           <li>
             <span>房屋描述</span>
-            <input placeholder="简单描述即可,50字以内" name="describe" onInput={onInput}/>
+            <input placeholder="简单描述即可,50字以内" name="describe" onInput={onInput} autoComplete="off"/>
           </li>
           <li>
             <span>联系方式</span>
-            <input placeholder="请输入手机号" type="number" name="_phone" onInput={onInput}/>
+            <input placeholder="请输入手机号" type="number" name="_phone" onInput={onInput} autoComplete="off"/>
           </li>
           <li>
             <span>称呼方式</span>
-            <input placeholder="李先/生张女士/奥特曼 之类的随意" name="nickname" onInput={onInput}/>
+            <input placeholder="李先/生张女士/奥特曼 之类的随意" name="nickname" onInput={onInput} autoComplete="off"/>
           </li>
           <li>
             <span className={styled.heightLabel}>房屋标签</span>
@@ -183,9 +226,10 @@ const Publish = () => {
         </ul>
         <p className={styled.verify}>{verify}</p>
       </section>
-      
-      {/* <div className={styled.submitButton} onClick={onSubmit}>发布出租委托</div> */}
-      <div className={styled.submitButton} onClick={onSubmit}><LoadingOutlined /></div>
+      {
+        loading ? <div className={styled.submitButton}><LoadingOutlined /></div> :
+        <div className={styled.submitButton} onClick={onSubmit}>发布出租委托</div>
+      }
       <div style={{height: "20px"}}></div>
       <Modal show={tagDialog} title="选择房屋标签" close={()=>setTagDialog(false)}>
         <TagDialog onChoice={onChoiceTag} onClose={onCloseTagDialog} tags={tags}/>

@@ -6,8 +6,10 @@ const http = axios.create({
 
 http.interceptors.request.use(
   config => {
-    const token = localStorage.getItem('token')
-    if (token) config.headers.token = token
+    if (!config.noToken) {
+      const token = localStorage.getItem('token')
+      if (token) config.headers.token = token
+    }
     return config
   },
   error => {
@@ -19,9 +21,10 @@ http.interceptors.response.use(
   response => {
     if (response.data.status === 200) {
       return response.data.data || new Object()
-    } else {
-      alert(response.data.msg)
+    } else if (response.data.msg) {
       return Promise.reject(response.data || {status: 400, msg: "网络错误"})
+    } else {
+      return response.data
     }
   },
   error => {

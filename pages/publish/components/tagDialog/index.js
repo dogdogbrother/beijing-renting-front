@@ -1,63 +1,18 @@
 import styled from './style.module.scss'
 import { useState, useEffect } from 'react'
 import { Divider, Tag, message } from 'antd';
+import http from '../../../../http/http'
 
 const TagDialog = (props) => {
   const { onChoice, onClose, tags } = props
   useEffect(() => {
     setMyTag(tags)
+    http.get("/tag").then(res => {
+      setAllTag(res || [])
+    })
   }, [])
   const [myTag, setMyTag] = useState([])
-  const [allTag] = useState([
-    {
-      name: "7号线",
-      id: 1
-    },
-    {
-      name: "大阳台",
-      id: 2
-    },
-    {
-      name: "能做饭",
-      id: 3
-    },
-    {
-      name: "全自动洗衣机",
-      id: 4
-    },
-    {
-      name: "1号线",
-      id: 5
-    },
-    {
-      name: "2号线",
-      id: 6
-    },
-    {
-      name: "3号线",
-      id: 7
-    },
-    {
-      name: "4号线",
-      id: 8
-    },
-    {
-      name: "可短租",
-      id: 9
-    },
-    {
-      name: "室友nice",
-      id: 10
-    },
-    {
-      name: "两居室",
-      id: 11
-    },
-    {
-      name: "押一付一",
-      id: 12
-    },
-  ])
+  const [allTag, setAllTag] = useState([])
   function addTag(tag) {
     if (myTag.length > 7) {
       return message.warning('标签最多只能有8个');
