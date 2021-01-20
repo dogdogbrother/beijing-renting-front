@@ -6,7 +6,7 @@ const HousList = (props) => {
   const { houseList } = props
   return <ul className={Styled.roomBox}>
     {
-      houseList.map(house => <li key={house.id}>
+      (houseList || []).map(house => <li key={house.id}>
         <Link href={`/room/${house.id}`} key={house.id}>
           <img src={house.picture.url} />
         </Link>

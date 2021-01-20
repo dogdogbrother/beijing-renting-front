@@ -8,7 +8,7 @@ import { PlusOutlined, CloseCircleOutlined, LoadingOutlined } from '@ant-design/
 import { Tag, message, Select } from 'antd';
 import { dealImage } from '../../help/help'
 import Router from 'next/router'
-import { formVerify } from'./verify'
+import { formVerify } from'../../help/verify'
 
 const Publish = () => {
   const [loading, setLoading] = useState(false)

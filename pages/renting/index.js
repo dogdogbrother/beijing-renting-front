@@ -6,7 +6,7 @@ import Styled from './style.module.scss'
 import { SearchOutlined } from '@ant-design/icons';
 import { Checkbox } from 'antd';
 import { getGaodeSite } from '../../http/api'
-import HousList from './components/houseList'
+import HousList from './component/houseList'
 const CheckboxGroup = Checkbox.Group;
 /**
  * @param {array} districts  是从高德API申请过来的地区列表
