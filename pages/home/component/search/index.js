@@ -2,6 +2,8 @@ import { useState, useRef } from 'react'
 import Link from 'next/link'
 import styled from './style.module.scss'
 import { getGaodeSite } from '../../../../http/api'
+import Router from 'next/router'
+
 const Search = () => {
   const [placeList, setPlaceList] = useState([])
   const searchRef = useRef()
@@ -22,6 +24,14 @@ const Search = () => {
     setPlaceList([])
   }
   const debounceTask = debounce(onInput, 500)
+  function onSearch() {
+    Router.push({
+      pathname: "renting",
+      query: {
+        searchKey: searchRef.current.value
+      }
+    })
+  }
   return (
     <div className={styled.searchBox}>
       <input 
@@ -35,7 +45,7 @@ const Search = () => {
             <span>地图</span>
           </div>
         </Link>
-      <div className={styled.searchBtn}>开始找房</div>
+      <div className={styled.searchBtn} onClick={onSearch}>开始找房</div>
       <ul className={styled.placeList}>
         {placeList.map(place => {
           return <li key={place.id} onClick={() => toSearch(place)}>{place.name}</li>

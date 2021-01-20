@@ -15,7 +15,7 @@ const Home = () => {
         <header>
           <h3>梅梅公益</h3>
           <ul>
-            <li><Link href="/renting">租房</Link></li>
+            <li><Link href="/renting?searchKey">租房</Link></li>
             <li><Link href="/publish">发布房源</Link></li>
             {
               loginStatus

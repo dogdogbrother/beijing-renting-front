@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
+import { useRouter } from 'next/router'
 import axios from 'axios'
 import http from '../../http/http'
 import Styled from './style.module.scss'
@@ -11,6 +12,7 @@ const CheckboxGroup = Checkbox.Group;
  * @param {array} districts  是从高德API申请过来的地区列表
  */
 const Renting = ({districts}) => {
+  const router = useRouter()
   const [placeList, setPlaceList] = useState([])  // 输入提醒的列表数据
   const searchRef = useRef()
   const [loading, setLoading] = useState(false) 
@@ -18,11 +20,12 @@ const Renting = ({districts}) => {
   // 我们就拿 adcode 作为搜索条件精准查找,mysql字段也有 adcode 的
   const [community, setCommunity] = useState([])  // 点击地区后，拿到的街道数据
   const [searchData, setSearchData] = useState({
+    keywords: undefined,
     adcode: undefined, // 城区参数
     community: undefined, // 街道参数
   })
   const [selectCommunity, setSelectCommunity] = useState("")  // 点击街道后，拿到的center数据
-  // const
+
   const [selectTab, setSelectTab] = useState(0)
   const [houseList, setHouseList] = useState({count: 0, list: []})
   const toSearch = (item) => {
@@ -31,8 +34,12 @@ const Renting = ({districts}) => {
   }
   const checkOptions = ["0-1500","1500-2500","2500-3500","3500-4500","4500+"]
   useEffect(() => {
-    onSearch()
-  }, [searchData])
+    console.log(router.query.searchKey);
+    if (router.query.searchKey || router.query.searchKey === "") {
+      searchRef.current.value = router.query.searchKey || ""
+      onSearch()
+    }
+  }, [router.query.searchKey])
   const onInput = async (e) => {
     setPlaceList(await getGaodeSite(e.target.value))
   }
@@ -48,6 +55,8 @@ const Renting = ({districts}) => {
   const debounceTask = debounce(onInput, 1000)
   function onSearch(){
     setLoading(true)
+    const searchKey = searchRef.current.value
+    if (searchKey) searchData.searchKey = searchKey
     http.get("/house/list", {params: {
       pageSize: 10,
       pageNum: 1,
@@ -66,6 +75,7 @@ const Renting = ({districts}) => {
                 if (loading) return
                 setCommunity(district.districts)
                 setSearchData({...searchData, adcode: district.adcode, community: undefined})
+                onSearch()
              }} 
              key={district.adcode}
              className={community[0]?.adcode === district.adcode ? Styled.activeTag : ""}>
@@ -106,6 +116,7 @@ const Renting = ({districts}) => {
                     if (loading) return
                     setSelectCommunity(district.center)
                     setSearchData({...searchData, community: district.name})
+                    onSearch()
                   }}
                   className={selectCommunity === district.center ? Styled.activeTag : ""}
                 >{district.name}</span>
