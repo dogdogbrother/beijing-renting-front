@@ -1,5 +1,4 @@
 import { useState, useRef } from 'react'
-import Link from 'next/link'
 import styled from './style.module.scss'
 import { getGaodeSite } from '../../../../http/api'
 import Router from 'next/router'
@@ -32,6 +31,14 @@ const Search = () => {
       }
     })
   }
+  function toMap() {
+    Router.push({
+      pathname: "map",
+      query: {
+        searchKey: searchRef.current.value
+      }
+    })
+  }
   return (
     <div className={styled.searchBox}>
       <input 
@@ -39,12 +46,10 @@ const Search = () => {
         onInput={debounceTask}
         ref={searchRef}
         ></input>
-        <Link href="/map">
-          <div className={styled.mapIcon}>
-            <i></i>
-            <span>地图</span>
-          </div>
-        </Link>
+        <div className={styled.mapIcon} onClick={toMap}>
+          <i></i>
+          <span>地图</span>
+        </div>
       <div className={styled.searchBtn} onClick={onSearch}>开始找房</div>
       <ul className={styled.placeList}>
         {placeList.map(place => {

@@ -1,0 +1,22 @@
+.wrap {
+  display: flex;
+}
+.houseCard {
+  background-color: #fff;
+  width: 300px;
+  padding: 20px;
+  li {
+    border: 1px solid #999;
+    margin-bottom: 20px;
+    img {
+      width: 100%;
+      height: auto;
+    }
+    p {
+      margin: 5px 0;
+    }
+  }
+}
+.mapBox {
+  flex: 1;
+}
