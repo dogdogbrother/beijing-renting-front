@@ -12,6 +12,8 @@ const CheckboxGroup = Checkbox.Group;
  * @param {array} districts  是从高德API申请过来的地区列表
  */
 const Renting = ({districts}) => {
+  const CancelToken = axios.CancelToken
+  let cancel = null  // 和上面的 CancelToken 控制取消请求,因为业务上有可能带有searchKey,也可能不带
   const router = useRouter()
   const [placeList, setPlaceList] = useState([])  // 输入提醒的列表数据
   const searchRef = useRef()
@@ -23,23 +25,26 @@ const Renting = ({districts}) => {
     keywords: undefined,
     adcode: undefined, // 城区参数
     community: undefined, // 街道参数
+    priceRange: undefined,
   })
   const [selectCommunity, setSelectCommunity] = useState("")  // 点击街道后，拿到的center数据
-
   const [selectTab, setSelectTab] = useState(0)
   const [houseList, setHouseList] = useState({count: 0, list: []})
   const toSearch = (item) => {
     searchRef.current.value = item.name
     setPlaceList([])
   }
-  const checkOptions = ["0-1500","1500-2500","2500-3500","3500-4500","4500+"]
+  const checkOptions = ["0-1500","1500-2500","2500-4000","4500-6000","6000-10000"]
   useEffect(() => {
-    console.log(router.query.searchKey);
-    if (router.query.searchKey || router.query.searchKey === "") {
-      searchRef.current.value = router.query.searchKey || ""
+    onSearch()
+  }, [searchData])
+  useEffect(() => {
+    if (router.query.searchKey) {
+      searchRef.current.value = router.query.searchKey
+      cancel()
       onSearch()
     }
-  }, [router.query.searchKey])
+  }, [])
   const onInput = async (e) => {
     setPlaceList(await getGaodeSite(e.target.value))
   }
@@ -55,13 +60,18 @@ const Renting = ({districts}) => {
   const debounceTask = debounce(onInput, 1000)
   function onSearch(){
     setLoading(true)
-    const searchKey = searchRef.current.value
-    if (searchKey) searchData.searchKey = searchKey
-    http.get("/house/list", {params: {
-      pageSize: 10,
-      pageNum: 1,
-      ...searchData
-    }}).then(data => {
+    // const searchKey = searchRef.current.value
+    // if (searchKey) searchData.searchKey = searchKey
+    http.get("/house/list", {
+      cancelToken: new CancelToken((c) => {
+        cancel = c
+      }),
+      params: {
+        pageSize: 10,
+        pageNum: 1,
+        ...searchData
+      }
+  }).then(data => {
       setHouseList({
         count: data.count || 0,
         list: data.list || []
@@ -69,18 +79,47 @@ const Renting = ({districts}) => {
       setLoading(false)
     }).catch(() => setLoading(false))
   }
+  function resertCondition() {
+    searchRef.current.value = ""
+    setCommunity("")
+    setSelectCommunity("")
+    setSearchData({
+      keywords: undefined,
+      adcode: undefined, // 城区参数
+      community: undefined, // 街道参数
+      priceRange: undefined,
+    })
+  }
   function getDistrictTag(district) {
     return <span 
              onClick={() => {
                 if (loading) return
                 setCommunity(district.districts)
                 setSearchData({...searchData, adcode: district.adcode, community: undefined})
-                onSearch()
              }} 
              key={district.adcode}
              className={community[0]?.adcode === district.adcode ? Styled.activeTag : ""}>
              {district.name}
            </span>
+  }
+  function onCheckPice(value) {
+    if (loading) return
+    let tmp = value
+    if (searchData.priceRange && searchData.priceRange.length) {
+      tmp = value.filter(item => {
+        return searchData.priceRange !== item
+      })
+    }
+    setSearchData({
+      ...searchData,
+      priceRange: tmp[0]
+    })
+  }
+  function saveSearchKey() {
+    setSearchData({
+      ...searchData,
+      keywords: searchRef.current.value
+    })
   }
   return (
     <>
@@ -91,7 +130,7 @@ const Renting = ({districts}) => {
             onInput={debounceTask}
             ref={searchRef}/>
           <div>
-            <SearchOutlined style={{fontSize: '20px', color: '#888'}} />
+            <SearchOutlined style={{fontSize: '20px', color: '#888'}} onClick={saveSearchKey} />
           </div>
           <ul className={Styled.placeList}>
             {placeList.map(place => {
@@ -116,7 +155,6 @@ const Renting = ({districts}) => {
                     if (loading) return
                     setSelectCommunity(district.center)
                     setSearchData({...searchData, community: district.name})
-                    onSearch()
                   }}
                   className={selectCommunity === district.center ? Styled.activeTag : ""}
                 >{district.name}</span>
@@ -124,28 +162,30 @@ const Renting = ({districts}) => {
             </div>
           </div> : null
         }
-        <div className={Styled.navItem}>
+        {/* <div className={Styled.navItem}>
           <label className={Styled.label}>方式</label>
           <div className={Styled.choice}>
             <span>不限</span>
             <span>整租</span>
             <span>合租</span>
           </div>
-        </div>
+        </div> */}
         <div className={Styled.navItem}>
           <label className={Styled.label}>租金</label>
-          <CheckboxGroup options={checkOptions} />
+          <CheckboxGroup options={checkOptions} value={[searchData.priceRange]} onChange={onCheckPice}/>
         </div>
       </nav>
       <div className={Styled.searchResult}>
         <p>已为您找到 <span>{houseList.count}</span> 套租房</p>
-        <i>清空条件</i>
+        <i onClick={resertCondition}>清空条件</i>
       </div>
-      <ul className={Styled.tabs}>
-        <li className={selectTab === 0 ? Styled.activeTab : ""}>最近上发布</li>
-        <li className={selectTab === 1 ? Styled.activeTab : ""}>价格</li>
-        <li className={selectTab === 2 ? Styled.activeTab : ""}>面积</li>
-      </ul>
+      {
+        houseList.length && <ul className={Styled.tabs}>
+          <li className={selectTab === 0 ? Styled.activeTab : ""}>最近上发布</li>
+          <li className={selectTab === 1 ? Styled.activeTab : ""}>价格</li>
+          <li className={selectTab === 2 ? Styled.activeTab : ""}>面积</li>
+        </ul>
+      }
       <HousList houseList={houseList.list} />
     </>
   )

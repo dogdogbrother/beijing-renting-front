@@ -37,15 +37,16 @@
   }
 }
 .searchBtn {
-  background-color: #00ae66;
+  background-color: #1890ff;
   text-align: center;
   font-size: 18px;
   line-height: 50px;
   width: 120px;
   color: #fff;
   font-weight: 300;
+  cursor: pointer;
   &:hover {
-    background-color: #00b86b;
+    background-color: #189aff;
   }
 }
 .placeList {

@@ -2,8 +2,9 @@ import styled from './style.module.scss'
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import http from '../../../../http/http'
+import { message } from 'antd';
 const LoginForm = (props) => {
-  const { close } = props
+  const { success } = props
   const dispatch = useDispatch()
   const [isLogin, setIsLogin] = useState(true) // true是登录,false是注册
   const [loginForm, setLoginForm] = useState({
@@ -49,17 +50,19 @@ const LoginForm = (props) => {
     if (pass) return 
     const URL_API = isLogin ? "/user/login" : "user/register"
     const postData = isLogin ? {...loginForm} : {...registerForm}
-    http.post(URL_API, {...postData}).then(({username, token, id}) => {
+    http.post(URL_API, {...postData}).then(({username, token, id, collectHouse}) => {
       localStorage.setItem("token", token)
       dispatch({
         type: "user/setStatus",
         payload: {
           loginStatus: true,
           username,
-          id
+          id,
+          collectHouse
         }
       })
-      close()
+      message.success(isLogin ? "登录成功" : "注册成功,已自动登录");
+      success()
     })
   }
   function onSwitch() {
@@ -71,14 +74,14 @@ const LoginForm = (props) => {
       isLogin
       ?
       <section>
-        <input placeholder="请输入用户名" name="username" onInput={setLogin} />
-        <input placeholder="请输入密码" name="password" onInput={setLogin} />
+        <input placeholder="请输入用户名" name="username" onInput={setLogin} autoComplete="off"/>
+        <input placeholder="请输入密码" name="password" type="password" onInput={setLogin} />
       </section>
       :
       <section>
-        <input placeholder="请输入用户名" name="username" onInput={setRegister}/>
-        <input placeholder="请输入密码" name="password" onInput={setRegister}/>
-        <input placeholder="请再次确认密码" name="affirmPassword" onInput={setRegister}/>
+        <input placeholder="请输入用户名" name="username" onInput={setRegister} autoComplete="off"/>
+        <input placeholder="请输入密码" name="password" type="password" onInput={setRegister}/>
+        <input placeholder="请再次确认密码" name="affirmPassword" type="password" onInput={setRegister}/>
       </section>
     }
     <i>{verify}</i>

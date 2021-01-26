@@ -31,14 +31,6 @@ const Search = () => {
       }
     })
   }
-  function toMap() {
-    Router.push({
-      pathname: "map",
-      query: {
-        searchKey: searchRef.current.value
-      }
-    })
-  }
   return (
     <div className={styled.searchBox}>
       <input 
@@ -46,7 +38,7 @@ const Search = () => {
         onInput={debounceTask}
         ref={searchRef}
         ></input>
-        <div className={styled.mapIcon} onClick={toMap}>
+        <div className={styled.mapIcon} onClick={() => Router.push("/map")}>
           <i></i>
           <span>地图</span>
         </div>

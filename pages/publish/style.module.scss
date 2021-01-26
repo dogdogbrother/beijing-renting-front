@@ -79,9 +79,12 @@
   width: 140px;
   padding: 10px;
   text-align: center;
-  background-color: #00ac65;
+  background-color: #1890ff;
   margin: 0 auto;
   cursor: pointer;
+  &:hover {
+    background-color: #189aff;
+  }
 }
 .heightLabel {
   display: flex;
@@ -106,7 +109,7 @@
   color: #fff;
   cursor: pointer;
   text-align: center;
-  background-color: #00ac65;
+  background-color: #1890ff;
 }
 .imgBox {
   flex: 1;

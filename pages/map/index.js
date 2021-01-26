@@ -4,25 +4,21 @@ import http from '../../http/http'
 import Styled from './style.module.scss'
 const Map = () => {
   const { query } = useRouter()
-  let searchKey = undefined
   let map = undefined
   const houseMap = new Object()
   const [houseList, setHouseList] = useState([])
   useEffect(() => {
-    if (!query.searchKey && query.searchKey !== "") return
-    searchKey = query.searchKey
     map = new AMap.Map('container', {
       zoom:11, //级别
       center: [116.397428, 39.90923], //中心点坐标
     });
     getMarkData(0)
-  }, [query.searchKey])
+  }, [])
   function getMarkData(start) {
     // 接口带3参数,会返回数组和next,next为true,再+50申请
     http.get("/house/mark", {params: {
       start,
       end: start + 50,
-      searchKey
     }}).then(({list, next}) => { // data 格式为{ next: true | false, list: [] }
       // 房子坐标的展示有个问题,因为有可能是一个坐标下有多个房子,但是其实只能展示一个点.
       // 所以要先遍历,用location作为key值,只记录一个坐标

@@ -164,7 +164,7 @@ const Publish = () => {
           <li>
             <span>详细地址</span>
             <div className={styled.inputBox}>
-              <input placeholder="请输入楼栋号" type="number" name="buildNumber" onInput={onInput} autoComplete="off"/>
+              <input placeholder="请输入楼栋号" name="buildNumber" onInput={onInput} autoComplete="off"/>
               <input placeholder="请输入单元号" type="number" name="cellNumber" onInput={onInput} autoComplete="off"/>
               <input placeholder="请输入门牌号" type="number" name="houseNumber" onInput={onInput} autoComplete="off"/>
             </div>

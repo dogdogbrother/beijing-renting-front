@@ -7,7 +7,7 @@ import '../styles/globals.css'
 import http from '../http/http'
 function MyApp({ Component, pageProps }) {
   useEffect(() => {
-    http.get("/user/info").then(({username, id}) => {
+    http.get("/user/info").then(({username, id, collectHouse}) => {
       // 已登录处理, 未登录不处理
       if (username) {
         store.dispatch({
@@ -15,7 +15,8 @@ function MyApp({ Component, pageProps }) {
           payload: {
             loginStatus: true,
             username,
-            id
+            id,
+            collectHouse
           }
         })
       }

@@ -48,3 +48,13 @@
     line-height: 60px;
   }
 }
+.popover {
+  li {
+    margin: 5px 0;
+    color: #666;
+    cursor: pointer;
+    &:hover {
+      color: #333;
+    }
+  }
+}

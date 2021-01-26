@@ -40,6 +40,7 @@
   position: absolute;
   left: 0;
   top: 60px;
+  z-index: 100;
   background-color: #fff;
   width: 640px;
   color: #666;
@@ -81,7 +82,7 @@
   }
 }
 .activeTag {
-  color: #00ae66;
+  color: #1890ff;
 }
 /**
   搜索结果展示
@@ -98,7 +99,7 @@
     font-weight: 500;
     font-size: 18px;
     span {
-      color: #00ae66;
+      color: #1890ff;
     }
   }
   i {
@@ -130,6 +131,6 @@
   }
 }
 .activeTab {
-  color: #00ae66 !important;
-  border-bottom: 3px solid #00ae66;
+  color: #1890ff !important;
+  border-bottom: 3px solid #1890ff;
 }
