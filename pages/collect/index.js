@@ -2,23 +2,27 @@ import { useEffect, useState } from 'react'
 import http from '../../http/http'
 import Styled from './style.module.scss'
 import { Button } from 'antd'
+import { useDispatch } from 'react-redux'
 const Collect = () => {
+  const dispatch = useDispatch()
   const [collect, setCollect] = useState([])
   useEffect(() => {
-    http.get("/collect").then(data => {
-      console.log(data);
-      setCollect(data)
-    })
+    getCollect()
   }, [])
   function onCancelCollect(houseId) {
-    http.delete(`/collect/${houseId}`).then(data => {
-      console.log(data);
-      // dispatch({
-      //   type: "user/setStatus",
-      //   payload: {
-      //     collectHouse: collectHouse.filter(item => item !== info.id)
-      //   }
-      // })
+    http.delete(`/collect/${houseId}`).then(() => {
+      getCollect()
+    })
+  }
+  function getCollect() {
+    http.get("/collect").then(data => {
+      dispatch({
+        type: "user/setStatus",
+        payload: {
+          collectHouse: data.map(item => item.houseId)
+        }
+      })
+      setCollect(data)
     })
   }
   return <div>
